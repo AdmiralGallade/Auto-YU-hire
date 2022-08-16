@@ -19,10 +19,14 @@ password=lines[1]
 f.close()
 
 # print("Username: "+username +"\n Password: "+password+"\n")
+try:
+    Cookies_button=driver.find_element_by_xpath("//button[contains(text(),'Accept all cookies')]")
+    Cookies_button.is_displayed()
+    Cookies_button.click()
+except:
+    print("Cookies popup not found")
 
-Cookies_button=driver.find_element_by_xpath("//button[contains(text(),'Accept all cookies')]")
-Cookies_button.is_displayed()
-Cookies_button.click()
+
 
 
 Username_Input=driver.find_element_by_id("TM_LOGINFRAME_USERNAME_FLD")
