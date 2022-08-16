@@ -47,19 +47,28 @@ def AffliationChoices(option):
     Affliation_Dropdown=driver.find_element_by_xpath("//*[@data-id='selContractTypes_1']/span[contains(text(),'Affiliation')]")
     Affliation_Dropdown.click()
 
-    choice="//*[@id='frmimproveSearch2_1']/div//a/span[contains(text(),'"+option+"')]"
-    affliationOption= driver.find_element_by_xpath(choice)
-    affliationOption.click()
 
+    for affChoice in list(option):
+        print(affChoice)
+        choice="//*[@id='frmimproveSearch2_1']/div//a/span[normalize-space(text())='"+str(affChoice)+"']"
+        print(choice)
+        affliationOption= driver.find_element_by_xpath(choice)
+        affliationOption.click()
+    
     Affliation_Dropdown.click()
+    
+    SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
+    SearchButton.click()
+    
+
     
 def main():
     Login()
-    AffliationChoices("YUSA 2 PT")
-    AffliationChoices("Work Study")
-    AffliationChoices("Work Study - LEAP")
+    AffliationChoices(["YUSA 2 PT","Work Study - LEAP","Work Study"])
 
     
+
+
 
 if __name__ == "__main__":
     main()
