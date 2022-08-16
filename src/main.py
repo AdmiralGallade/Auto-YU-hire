@@ -10,36 +10,35 @@ from selenium.webdriver.support import expected_conditions as EC
 
 driver = webdriver.Chrome(executable_path=r"src\\chromedriver.exe")
 
-driver.get('https://jobs-ca.technomedia.com/yorkuniversity/?')
+def Login():
+    driver.get('https://jobs-ca.technomedia.com/yorkuniversity/?')
 
-f=open("src\\account.txt","r")
-lines=f.readlines()
-username=lines[0]
-password=lines[1]
-f.close()
+    f=open("src\\account.txt","r")
+    lines=f.readlines()
+    username=lines[0]
+    password=lines[1]
+    f.close()
 
-# print("Username: "+username +"\n Password: "+password+"\n")
-try:
-    Cookies_button=driver.find_element_by_xpath("//button[contains(text(),'Accept all cookies')]")
-    Cookies_button.is_displayed()
-    Cookies_button.click()
-except:
-    print("Cookies popup not found")
-
-
+    # print("Username: "+username +"\n Password: "+password+"\n")
+    try:
+        Cookies_button=driver.find_element_by_xpath("//button[contains(text(),'Accept all cookies')]")
+        Cookies_button.is_displayed()
+        Cookies_button.click()
+    except:
+        print("Cookies popup not found")
 
 
-Username_Input=driver.find_element_by_id("TM_LOGINFRAME_USERNAME_FLD")
-Username_Input.send_keys(username)
+    Username_Input=driver.find_element_by_id("TM_LOGINFRAME_USERNAME_FLD")
+    Username_Input.send_keys(username)
 
-Password_Input=driver.find_element_by_id("TM_LOGINFRAME_PASSWORD_FLD")
-Password_Input.send_keys(password)
+    Password_Input=driver.find_element_by_id("TM_LOGINFRAME_PASSWORD_FLD")
+    Password_Input.send_keys(password)
 
-Continue_Button=driver.find_element_by_id("TM_LOGINFRAME_CONTINUE_BTN")
-Continue_Button.click()
+    Continue_Button=driver.find_element_by_id("TM_LOGINFRAME_CONTINUE_BTN")
+    Continue_Button.click()
 
-ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
-ViewJobPosting_button.click()
+    ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
+    ViewJobPosting_button.click()
 
 
 
@@ -54,7 +53,16 @@ def AffliationChoices(option):
 
     Affliation_Dropdown.click()
     
+def main():
+    Login()
+    AffliationChoices("YUSA 2 PT")
+    AffliationChoices("Work Study")
+    AffliationChoices("Work Study - LEAP")
 
+    
+
+if __name__ == "__main__":
+    main()
 
 # User_Input=driver.find_element_by_id("mli")
 # User_Input.send_keys(username)
