@@ -24,6 +24,7 @@ Cookies_button=driver.find_element_by_xpath("//button[contains(text(),'Accept al
 Cookies_button.is_displayed()
 Cookies_button.click()
 
+
 Username_Input=driver.find_element_by_id("TM_LOGINFRAME_USERNAME_FLD")
 Username_Input.send_keys(username)
 
@@ -33,7 +34,22 @@ Password_Input.send_keys(password)
 Continue_Button=driver.find_element_by_id("TM_LOGINFRAME_CONTINUE_BTN")
 Continue_Button.click()
 
+ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
+ViewJobPosting_button.click()
 
+
+
+# Prereq: Needs to be on Job Postings page after logging in. 
+def AffliationChoices(option):
+    Affliation_Dropdown=driver.find_element_by_xpath("//*[@data-id='selContractTypes_1']/span[contains(text(),'Affiliation')]")
+    Affliation_Dropdown.click()
+
+    choice="//*[@id='frmimproveSearch2_1']/div//a/span[contains(text(),'"+option+"')]"
+    affliationOption= driver.find_element_by_xpath(choice)
+    affliationOption.click()
+
+    Affliation_Dropdown.click()
+    
 
 
 # User_Input=driver.find_element_by_id("mli")
