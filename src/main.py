@@ -49,9 +49,9 @@ def AffliationChoices(option):
 
 
     for affChoice in list(option):
-        print(affChoice)
+        # print(affChoice)
         choice="//*[@id='frmimproveSearch2_1']/div//a/span[normalize-space(text())='"+str(affChoice)+"']"
-        print(choice)
+        # print(choice)
         affliationOption= driver.find_element_by_xpath(choice)
         affliationOption.click()
     
@@ -59,7 +59,16 @@ def AffliationChoices(option):
     
     SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
     SearchButton.click()
-    
+
+
+def OpenJobs():
+    evenJobNumberXpath="//*[@class='tblStripingEven']/td/a[@class='relink']"
+
+    evenJobNameXpath="//*[@class='tblStripingEven']//a[@class='relink']/ancestor::td/following-sibling::td/div/a"
+
+
+    oddJobNumberXpath="//*[@class='tblStripingOdd']/td/a[@class='relink']" 
+    oddJobNameXpath="//*[@class='tblStripingOdd']/td/a[@class='relink']/ancestor::td/following-sibling::td/div/a"
 
     
 def main():
