@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 driver = webdriver.Chrome(executable_path=r"src\\chromedriver.exe")
 
-driver.get('https://eclass.yorku.ca/eclass/')
+driver.get('https://jobs-ca.technomedia.com/yorkuniversity/?')
 
 f=open("src\\account.txt","r")
 lines=f.readlines()
@@ -18,7 +18,22 @@ username=lines[0]
 password=lines[1]
 f.close()
 
-print("Username: "+username +"\n Password: "+password+"\n")
+# print("Username: "+username +"\n Password: "+password+"\n")
+
+Cookies_button=driver.find_element_by_xpath("//button[contains(text(),'Accept all cookies')]")
+Cookies_button.is_displayed()
+Cookies_button.click()
+
+Username_Input=driver.find_element_by_id("TM_LOGINFRAME_USERNAME_FLD")
+Username_Input.send_keys(username)
+
+Password_Input=driver.find_element_by_id("TM_LOGINFRAME_PASSWORD_FLD")
+Password_Input.send_keys(password)
+
+Continue_Button=driver.find_element_by_id("TM_LOGINFRAME_CONTINUE_BTN")
+Continue_Button.click()
+
+
 
 
 # User_Input=driver.find_element_by_id("mli")
