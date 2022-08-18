@@ -1,5 +1,7 @@
 
 
+from asyncore import write
+from genericpath import getsize
 import json
 from logging import exception
 import selenium
@@ -9,7 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException 
 import time 
-
+from selenium.webdriver.remote.webelement import WebElement
 
 driver = webdriver.Chrome(executable_path=r"src\\chromedriver.exe")
 
@@ -67,21 +69,17 @@ def AffliationChoices(option):
     SearchButton.click()
 
 def writeToFile(id):
-    d={id}
-    with open('src\history.json', 'a') as f:
-        json.dump(d, f)
+    
+    with open('src\history.txt', 'a') as f:
+        f.write(id+"\n")
 
 
 def checkJobApplied(id):
-    d={}
-    with open('src\history.json') as f:
-        d=json.load(f)
-    if id in d:
-        print("existing")
-        return True
-    else:
-        print("New key")
-        return False
+    check = str(id)
+    with open('src\history.txt') as f:
+        match = check in f.read().splitlines()
+    print("match is: ",match)
+    return match
 
 def check_exists_by_xpath(xpath):
     try:
@@ -94,20 +92,20 @@ def check_exists_by_xpath(xpath):
 
 
 
-def ApplyToJob(element):
-    #TODO: add check for number, if it exists in history.json then return None
+def ApplyToJob(element: WebElement):
+   
+    
     element.click()
     applyButton=driver.find_element_by_id("btnApply_top")
     applyButton.click()
     
     
-    
-    #this checks if job is already applied or not
+   
 
-    flag=flag= True
+    flag= True
     try:
         test=driver.find_element_by_xpath("//h1[@class='TM_titlePage ']/span/span[contains(text(),'Application already')]")
-        print(test.text)
+        
     except NoSuchElementException:
         flag= False
     except exception:
@@ -115,24 +113,26 @@ def ApplyToJob(element):
     
 
     if flag==True:
+        print("Job already applied for ")
         backButton=driver.find_element_by_xpath("//*[@id='Button-Box']/input[2]")
         backButton.click()
         #Should exit it here
 
     elif flag==False:
-    
+        print("New job found, applying.")
         privacyCheckbox=driver.find_element_by_id("chkReadAndAccept")
-        privacyCheckbox.location_once_scrolled_into_view()
+        # privacyCheckbox.location_once_scrolled_into_view()
         privacyCheckbox.click()
 
         saveButton=driver.find_element_by_id("btnsave")
         saveButton.click()
 
-        applyForJobHeader=driver.find_element_by_xpath("//*[@title='Apply for a Job'']")
+        time.sleep(15)
+        applyForJobHeader=driver.find_element_by_xpath("//*[@title='Apply for a Job']")
         waitForAnElement(applyForJobHeader)
 
         submitButton=driver.find_element_by_id("btnSubmit")
-        submitButton.location_once_scrolled_into_view()
+        # submitButton.location_once_scrolled_into_view()
         submitButton.click()
 
         backButton=driver.find_element_by_xpath("//*[@id='Button-Box']/input[2]")
@@ -160,32 +160,41 @@ def OpenJobs():
 
     AffliationChoices(["Work Study - LEAP","Work Study"])
 
-    evenJobNumberXpath="//*[@class='tblStripingEven']/td/a[@class='relink']"
-    # evenJobNameXpath="//*[@class='tblStripingEven']//a[@class='relink']/ancestor::td/following-sibling::td/div/a"
+    jobsNumberXpath="//*[contains(@class,'tblStripingEven') or contains(@class,'tblStripingOdd')]/td/a[@class='relink']"
 
-    # evenJobsNameList= driver.find_elements_by_xpath(evenJobNameXpath)
-    evenJobsNumList=driver.find_elements_by_xpath(evenJobNumberXpath)
-
-   
-
-
-    oddJobNumberXpath="//*[@class='tblStripingOdd']/td/a[@class='relink']" 
-    # oddJobNameXpath="//*[@class='tblStripingOdd']/td/a[@class='relink']/ancestor::td/following-sibling::td/div/a"
-
-    oddJobsNumList=driver.find_elements_by_xpath(oddJobNumberXpath)
+    jobsNumberListSize= len(driver.find_elements_by_xpath(jobsNumberXpath))
     
-    #Individual webelements:
-    for odd, even in zip(oddJobsNumList, evenJobsNumList):
+    
+    for i in range(1,jobsNumberListSize):
+        elemXpath="(//*[contains(@class,'tblStripingEven') or contains(@class,'tblStripingOdd')]/td/a[@class='relink'])["+str(i)+"]"
+        currentElem=driver.find_element_by_xpath(elemXpath)
+        currentText=currentElem.text
+        print("Current text is:"+currentText)
+        if checkJobApplied(currentText)==True:
+            print("Current jop has already been applied to, skipping.")
+            break
+        else:
+            try:
+                print(currentText+" is the current job number")
+                ApplyToJob(currentElem)
+                time.sleep(5)
+                writeToFile(currentText)
+            except NoSuchElementException:
+                print("Job number which requires manual filling of forms: "+currentText)
+    
+    # for odd, even in zip(oddJobsNumList, evenJobsNumList):
         
-        print(odd,"<--")
-        ApplyToJob(odd)
 
-        # ApplyToJob(even)
+
+    
+
+        
 
 
 
     
 def main():
+
     Login()
     
     OpenJobs()
