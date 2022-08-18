@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException 
+from selenium.common.exceptions import ElementClickInterceptedException
 import time 
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -65,8 +66,13 @@ def AffliationChoices(option):
     
     Affliation_Dropdown.click()
     
-    SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
-    SearchButton.click()
+    try:
+        SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
+        SearchButton.click()
+    except ElementClickInterceptedException:
+        Affliation_Dropdown.click()
+        SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
+        SearchButton.click()
 
 def writeToFile(id):
     
@@ -99,7 +105,7 @@ def check_exists_by_xpath(xpath):
 
 def ApplyToJob(element: WebElement):
    
-    AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
+    
     element.click()
     applyButton=driver.find_element_by_id("btnApply_top")
     applyButton.click()
@@ -145,9 +151,9 @@ def ApplyToJob(element: WebElement):
 
     
     
-    waitForAnElement("//*[@id='job-search-toggle']")
+    # waitForAnElement("//*[@id='job-search-toggle']")
 
-    
+    AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
     print("passed apply jobs")
 
 
@@ -165,20 +171,28 @@ def ApplyToJob(element: WebElement):
 
 def OpenJobs():
 
-    AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
+    
 
     jobsNumberXpath="//*[contains(@class,'tblStripingEven') or contains(@class,'tblStripingOdd')]/td/a[@class='relink']"
 
     jobsNumberListSize= len(driver.find_elements_by_xpath(jobsNumberXpath))
     
     
-    for i in range(1,jobsNumberListSize):
+    # for i in range(1,jobsNumberListSize):
+    for i in range(1,200):
+        
+        AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
+        if i%20==0:
+            driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+            time.sleep(5)
         elemXpath="(//*[contains(@class,'tblStripingEven') or contains(@class,'tblStripingOdd')]/td/a[@class='relink'])["+str(i)+"]"
         currentElem=driver.find_element_by_xpath(elemXpath)
         currentText=currentElem.text
         print("Current text is:"+currentText)
         if checkJobApplied(currentText)==True:
             print("Current jop has already been applied to, skipping.")
+            ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
+            ViewJobPosting_button.click()
         else:
             try:
                 print(currentText+" is the current job number")
@@ -187,6 +201,8 @@ def OpenJobs():
             except NoSuchElementException:
                 print("Job number which requires manual filling of forms: "+currentText)
                 writeToManualApplicationFile(currentText)
+                ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
+                ViewJobPosting_button.click()
     
    
         
