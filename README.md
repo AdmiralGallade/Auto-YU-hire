@@ -8,6 +8,7 @@ Chrome Browser
 
 
 Before starting:
+Apply to 1 job and save the details first
 Download the chromedriver for your chrome version: https://chromedriver.chromium.org/downloads
 Then replace the chromdriver.exe inside your src folder with the downloaded version.
 
