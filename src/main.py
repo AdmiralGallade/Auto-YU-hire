@@ -73,6 +73,11 @@ def writeToFile(id):
     with open('src\history.txt', 'a') as f:
         f.write(id+"\n")
 
+def writeToManualApplicationFile(id):
+    
+    with open('src\manualApplyList.txt', 'a') as f:
+        f.write(id+"\n")
+
 
 def checkJobApplied(id):
     check = str(id)
@@ -94,7 +99,7 @@ def check_exists_by_xpath(xpath):
 
 def ApplyToJob(element: WebElement):
    
-    
+    AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
     element.click()
     applyButton=driver.find_element_by_id("btnApply_top")
     applyButton.click()
@@ -138,11 +143,13 @@ def ApplyToJob(element: WebElement):
         backButton=driver.find_element_by_xpath("//*[@id='Button-Box']/input[2]")
         backButton.click()
 
-    print("clicked back ")
+    
     
     waitForAnElement("//*[@id='job-search-toggle']")
 
+    
     print("passed apply jobs")
+
 
         
 
@@ -158,7 +165,7 @@ def ApplyToJob(element: WebElement):
 
 def OpenJobs():
 
-    AffliationChoices(["Work Study - LEAP","Work Study"])
+    AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
 
     jobsNumberXpath="//*[contains(@class,'tblStripingEven') or contains(@class,'tblStripingOdd')]/td/a[@class='relink']"
 
@@ -172,17 +179,16 @@ def OpenJobs():
         print("Current text is:"+currentText)
         if checkJobApplied(currentText)==True:
             print("Current jop has already been applied to, skipping.")
-            break
         else:
             try:
                 print(currentText+" is the current job number")
                 ApplyToJob(currentElem)
-                time.sleep(5)
                 writeToFile(currentText)
             except NoSuchElementException:
                 print("Job number which requires manual filling of forms: "+currentText)
+                writeToManualApplicationFile(currentText)
     
-    # for odd, even in zip(oddJobsNumList, evenJobsNumList):
+   
         
 
 
