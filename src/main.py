@@ -70,8 +70,9 @@ def AffliationChoices(option):
         SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
         SearchButton.click()
     except ElementClickInterceptedException:
-        Affliation_Dropdown.click()
-        SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
+        Affliation_Dropdown2=driver.find_element_by_xpath("//*[@id='frmimproveSearch2_1']//button/span[1][contains(text(),'Affiliation')]")
+        Affliation_Dropdown2.click()
+        SearchButton=driver.find_element_by_xpath("btnSearchbutton2_1")
         SearchButton.click()
 
 def writeToFile(id):
