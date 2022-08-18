@@ -9,6 +9,7 @@ Chrome Browser
 
 Before starting:
 Download the chromedriver for your chrome version: https://chromedriver.chromium.org/downloads
+Then replace the chromdriver.exe inside your src folder with the downloaded version.
 
 Create these 3 files in /src folder
   >account.txt
