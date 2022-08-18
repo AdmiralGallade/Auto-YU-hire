@@ -5,8 +5,8 @@ Before starting:
 Download the chromedriver for your chrome version: https://chromedriver.chromium.org/downloads
 
 Create these 3 files in /src folder
-  account.txt
+  >account.txt
   
-  history.txt
+  >history.txt
   
-  manualApplyList.txt
+  >manualApplyList.txt
