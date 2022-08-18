@@ -174,7 +174,7 @@ def OpenJobs():
     
     
     # for i in range(1,jobsNumberListSize):
-    for i in range(45,200):
+    for i in range(1,200):
         
         
         if i>=45:
