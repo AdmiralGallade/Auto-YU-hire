@@ -10,7 +10,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException 
-from selenium.common.exceptions import ElementClickInterceptedException
 import time 
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -66,14 +65,8 @@ def AffliationChoices(option):
     
     Affliation_Dropdown.click()
     
-    try:
-        SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
-        SearchButton.click()
-    except ElementClickInterceptedException:
-        Affliation_Dropdown2=driver.find_element_by_xpath("//*[@id='frmimproveSearch2_1']//button/span[1][contains(text(),'Affiliation')]")
-        Affliation_Dropdown2.click()
-        SearchButton=driver.find_element_by_xpath("btnSearchbutton2_1")
-        SearchButton.click()
+    SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
+    SearchButton.click()
 
 def writeToFile(id):
     
@@ -128,6 +121,7 @@ def ApplyToJob(element: WebElement):
         print("Job already applied for ")
         backButton=driver.find_element_by_xpath("//*[@id='Button-Box']/input[2]")
         backButton.click()
+        AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
         #Should exit it here
 
     elif flag==False:
@@ -180,12 +174,13 @@ def OpenJobs():
     
     
     # for i in range(1,jobsNumberListSize):
-    for i in range(1,200):
+    for i in range(45,200):
         
-        AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
-        if i%20==0:
+        
+        if i>=45:
             driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-            time.sleep(5)
+            time.sleep(1)
+        AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
         elemXpath="(//*[contains(@class,'tblStripingEven') or contains(@class,'tblStripingOdd')]/td/a[@class='relink'])["+str(i)+"]"
         currentElem=driver.find_element_by_xpath(elemXpath)
         currentText=currentElem.text
