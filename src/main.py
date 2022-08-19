@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException 
+from selenium.common.exceptions import ElementClickInterceptedException
 import time 
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -76,19 +77,24 @@ def AffliationChoices(option):
     Affliation_Dropdown.click()
     
     flag=False
+    flag2=False
     #Getting unusual error in which dropdown is still open, fix attempt for that.
     try:
         flag=check_exists_by_xpath("//*[@class='btn-group bootstrap-select show-tick re-select doNotAutoSelectFirstOption open']")
+        flag2=driver.find_element_by_id("textsearchButton_1").is_displayed()
     except NoSuchElementException:
         flag=False
     
-    if flag==True:
-        dropdown_class=driver.find_element_by_xpath("//*[@class='btn-group bootstrap-select show-tick re-select doNotAutoSelectFirstOption open']")
-        dropdown_class.click()
-    SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
+    if flag==True or flag2==True:
+        Affliation_Dropdown.click()
 
-
-    SearchButton.click()
+    try: 
+        SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
+        SearchButton.click()
+    except ElementClickInterceptedException:
+        Affliation_Dropdown.click()
+        SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
+        SearchButton.click()
 
 def writeToFile(id):
     
