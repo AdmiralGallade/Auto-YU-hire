@@ -106,7 +106,14 @@ def writeToManualApplicationFile(id):
     with open('src\manualApplyList.txt', 'a') as f:
         f.write(id+"\n")
 
+def checkManualJobApply(id):
+    check = str(id)
+    with open('src\manualApplyList.txt') as f:
+        match = check in f.read().splitlines()
+    print("match is: ",match)
+    return match
 
+    
 def checkJobApplied(id):
     check = str(id)
     with open('src\history.txt') as f:
@@ -194,7 +201,7 @@ def OpenJobs():
     
     
     # for i in range(1,jobsNumberListSize):
-    for i in range(45,200):
+    for i in range(95,200):
         
         
         
@@ -207,8 +214,8 @@ def OpenJobs():
         currentElem=driver.find_element_by_xpath(elemXpath)
         currentText=currentElem.text
         print("Current text is:"+currentText)
-        if checkJobApplied(currentText)==True:
-            print("Current jop has already been applied to, skipping.")
+        if checkJobApplied(currentText)==True or checkManualJobApply(currentText)==True:
+            print("Current job has already been applied to, skipping.")
             ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
             ViewJobPosting_button.click()
         else:
