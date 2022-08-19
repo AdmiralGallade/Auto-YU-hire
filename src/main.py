@@ -50,6 +50,16 @@ def waitForAnElement(elem):
     from selenium.webdriver.support.wait import WebDriverWait
     element = WebDriverWait(driver, 10).until(lambda x: elem)
 
+def check_exists_by_xpath(xpath):
+    try:
+        driver.find_element_by_xpath(xpath)
+    except NoSuchElementException:
+        return False
+    except exception:
+        return False
+    return True
+
+
 # Prereq: Needs to be on Job Postings page after logging in. 
 def AffliationChoices(option):
     Affliation_Dropdown=driver.find_element_by_xpath("//*[@data-id='selContractTypes_1']/span[contains(text(),'Affiliation')]")
@@ -65,7 +75,19 @@ def AffliationChoices(option):
     
     Affliation_Dropdown.click()
     
+    flag=False
+    #Getting unusual error in which dropdown is still open, fix attempt for that.
+    try:
+        flag=check_exists_by_xpath("//*[@class='btn-group bootstrap-select show-tick re-select doNotAutoSelectFirstOption open']")
+    except NoSuchElementException:
+        flag=False
+    
+    if flag==True:
+        dropdown_class=driver.find_element_by_xpath("//*[@class='btn-group bootstrap-select show-tick re-select doNotAutoSelectFirstOption open']")
+        dropdown_class.click()
     SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
+
+
     SearchButton.click()
 
 def writeToFile(id):
@@ -86,14 +108,6 @@ def checkJobApplied(id):
     print("match is: ",match)
     return match
 
-def check_exists_by_xpath(xpath):
-    try:
-        driver.find_element_by_xpath(xpath)
-    except NoSuchElementException:
-        return False
-    except exception:
-        return False
-    return True
 
 
 
@@ -174,13 +188,15 @@ def OpenJobs():
     
     
     # for i in range(1,jobsNumberListSize):
-    for i in range(1,200):
+    for i in range(45,200):
         
         
-        if i>=45:
-            driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-            time.sleep(1)
+        
         AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
+        if i>=45:
+            for j in range(1,i%20):
+                driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+                time.sleep(1)
         elemXpath="(//*[contains(@class,'tblStripingEven') or contains(@class,'tblStripingOdd')]/td/a[@class='relink'])["+str(i)+"]"
         currentElem=driver.find_element_by_xpath(elemXpath)
         currentText=currentElem.text
