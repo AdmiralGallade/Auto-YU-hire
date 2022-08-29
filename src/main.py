@@ -4,6 +4,7 @@ from asyncore import write
 from genericpath import getsize
 import json
 from logging import exception
+from operator import contains
 import selenium
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -79,6 +80,8 @@ def AffliationChoices(option):
     flag=False
     flag2=False
     #Getting unusual error in which dropdown is still open, fix attempt for that.
+
+    #xpath to work on: (//*[contains(@class,'tblStripingEven') or contains(@class,'tblStripingOdd')]/td/a[@class='relink'])[38]//parent::td//following-sibling::td//div[contains(@class,'styleColAdd2')][contains(text(),'Work Study') or contains(text(),'YUSA 2 PT') or contains(text(),'Work Study - LEAP')]
     try:
         flag=check_exists_by_xpath("//*[@class='btn-group bootstrap-select show-tick re-select doNotAutoSelectFirstOption open']")
         flag2=driver.find_element_by_id("textsearchButton_1").is_displayed()
@@ -128,6 +131,8 @@ def ApplyToJob(element: WebElement):
    
     
     element.click()
+    checkContractType()
+
     applyButton=driver.find_element_by_id("btnApply_top")
     applyButton.click()
     
@@ -148,7 +153,7 @@ def ApplyToJob(element: WebElement):
         print("Job already applied for ")
         backButton=driver.find_element_by_xpath("//*[@id='Button-Box']/input[2]")
         backButton.click()
-        AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
+        # AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
         #Should exit it here
 
     elif flag==False:
@@ -180,7 +185,15 @@ def ApplyToJob(element: WebElement):
 
 
         
+def checkContractType():
+    ContractType=driver.find_element_by_xpath("//*[@id='djphCONTRACT_TYPE']/div[2]")
 
+    typeOfContract= ContractType.text
+
+    if typeOfContract not in ["Work Study - LEAP","Work Study","YUSA 2 PT"]:
+        ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
+        ViewJobPosting_button.click()
+        # AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
 
 
 
@@ -199,13 +212,13 @@ def OpenJobs():
 
     jobsNumberListSize= len(driver.find_elements_by_xpath(jobsNumberXpath))
     
-    
+    AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
     # for i in range(1,jobsNumberListSize):
-    for i in range(1,200):
+    for i in range(1,250):
         
         
         
-        AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
+        # AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
         if i>=45:
             for j in range(1,i%20):
                 driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
@@ -214,10 +227,14 @@ def OpenJobs():
         currentElem=driver.find_element_by_xpath(elemXpath)
         currentText=currentElem.text
         print("Current text is:"+currentText)
+
+        # TODO: make something which checks the affliation of the jobs here.
+        
         if checkJobApplied(currentText)==True or checkManualJobApply(currentText)==True:
             print("Current job has already been applied to, skipping.")
             ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
             ViewJobPosting_button.click()
+            AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
         else:
             try:
                 print(currentText+" is the current job number")
@@ -228,6 +245,7 @@ def OpenJobs():
                 writeToManualApplicationFile(currentText)
                 ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
                 ViewJobPosting_button.click()
+                AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
     
    
         
