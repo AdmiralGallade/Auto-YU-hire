@@ -15,7 +15,7 @@ from selenium.common.exceptions import ElementClickInterceptedException
 import time 
 from selenium.webdriver.remote.webelement import WebElement
 
-driver = webdriver.Chrome(executable_path=r"src\\chromedriver.exe")
+driver = webdriver.Chrome()
 
 def Login():
     driver.get('https://jobs-ca.technomedia.com/yorkuniversity/?')
@@ -28,23 +28,23 @@ def Login():
 
     # print("Username: "+username +"\n Password: "+password+"\n")
     try:
-        Cookies_button=driver.find_element_by_xpath("//button[contains(text(),'Accept all cookies')]")
+        Cookies_button=driver.find_element(By.ID,"btnCookieAcceptALL")
         Cookies_button.is_displayed()
         Cookies_button.click()
     except:
         print("Cookies popup not found")
 
 
-    Username_Input=driver.find_element_by_id("TM_LOGINFRAME_USERNAME_FLD")
+    Username_Input=driver.find_element(By.ID,"TM_LOGINFRAME_USERNAME_FLD")
     Username_Input.send_keys(username)
 
-    Password_Input=driver.find_element_by_id("TM_LOGINFRAME_PASSWORD_FLD")
+    Password_Input=driver.find_element(By.ID,"TM_LOGINFRAME_PASSWORD_FLD")
     Password_Input.send_keys(password)
 
-    Continue_Button=driver.find_element_by_id("TM_LOGINFRAME_CONTINUE_BTN")
+    Continue_Button=driver.find_element(By.ID,"TM_LOGINFRAME_CONTINUE_BTN")
     Continue_Button.click()
 
-    ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
+    ViewJobPosting_button=driver.find_element(By.XPATH,"//*[@id='liNEWS_INTERNAL_JOBS']/a")
     ViewJobPosting_button.click()
 
 #waits for it to come online
@@ -54,7 +54,7 @@ def waitForAnElement(elem):
 
 def check_exists_by_xpath(xpath):
     try:
-        driver.find_element_by_xpath(xpath)
+        driver.find_element(By.XPATH,xpath)
     except NoSuchElementException:
         return False
     except exception:
@@ -64,7 +64,7 @@ def check_exists_by_xpath(xpath):
 
 # Prereq: Needs to be on Job Postings page after logging in. 
 def AffliationChoices(option):
-    Affliation_Dropdown=driver.find_element_by_xpath("//*[@data-id='selContractTypes_1']/span[contains(text(),'Affiliation')]")
+    Affliation_Dropdown=driver.find_element(By.XPATH,"//*[@data-id='selContractTypes_1']/span[contains(text(),'Affiliation')]")
     Affliation_Dropdown.click()
 
 
@@ -72,7 +72,7 @@ def AffliationChoices(option):
         # print(affChoice)
         choice="//*[@id='frmimproveSearch2_1']/div//a/span[normalize-space(text())='"+str(affChoice)+"']"
         # print(choice)
-        affliationOption= driver.find_element_by_xpath(choice)
+        affliationOption= driver.find_element(By.XPATH,choice)
         affliationOption.click()
     
     Affliation_Dropdown.click()
@@ -84,7 +84,7 @@ def AffliationChoices(option):
     #xpath to work on: (//*[contains(@class,'tblStripingEven') or contains(@class,'tblStripingOdd')]/td/a[@class='relink'])[38]//parent::td//following-sibling::td//div[contains(@class,'styleColAdd2')][contains(text(),'Work Study') or contains(text(),'YUSA 2 PT') or contains(text(),'Work Study - LEAP')]
     try:
         flag=check_exists_by_xpath("//*[@class='btn-group bootstrap-select show-tick re-select doNotAutoSelectFirstOption open']")
-        flag2=driver.find_element_by_id("textsearchButton_1").is_displayed()
+        flag2=driver.find_element(By.ID,"textsearchButton_1").is_displayed()
     except NoSuchElementException:
         flag=False
     
@@ -92,11 +92,11 @@ def AffliationChoices(option):
         Affliation_Dropdown.click()
 
     try: 
-        SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
+        SearchButton=driver.find_element(By.ID,"btnSearchbutton2_1")
         SearchButton.click()
     except ElementClickInterceptedException:
         Affliation_Dropdown.click()
-        SearchButton=driver.find_element_by_id("btnSearchbutton2_1")
+        SearchButton=driver.find_element(By.ID,"btnSearchbutton2_1")
         SearchButton.click()
 
 def writeToFile(id):
@@ -133,7 +133,7 @@ def ApplyToJob(element: WebElement):
     element.click()
     checkContractType()
 
-    applyButton=driver.find_element_by_id("btnApply_top")
+    applyButton=driver.find_element(By.ID,"btnApply_top")
     applyButton.click()
     
     
@@ -141,7 +141,7 @@ def ApplyToJob(element: WebElement):
 
     flag= True
     try:
-        test=driver.find_element_by_xpath("//h1[@class='TM_titlePage ']/span/span[contains(text(),'Application already')]")
+        test=driver.find_element(By.XPATH,"//h1[@class='TM_titlePage ']/span/span[contains(text(),'Application already')]")
         
     except NoSuchElementException:
         flag= False
@@ -151,29 +151,29 @@ def ApplyToJob(element: WebElement):
 
     if flag==True:
         print("Job already applied for ")
-        backButton=driver.find_element_by_xpath("//*[@id='Button-Box']/input[2]")
+        backButton=driver.find_element(By.XPATH,"//*[@id='Button-Box']/input[2]")
         backButton.click()
         # AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
         #Should exit it here
 
     elif flag==False:
         print("New job found, applying.")
-        privacyCheckbox=driver.find_element_by_id("chkReadAndAccept")
+        privacyCheckbox=driver.find_element(By.ID,"chkReadAndAccept")
         # privacyCheckbox.location_once_scrolled_into_view()
         privacyCheckbox.click()
 
-        saveButton=driver.find_element_by_id("btnsave")
+        saveButton=driver.find_element(By.ID,"btnsave")
         saveButton.click()
 
         time.sleep(15)
-        applyForJobHeader=driver.find_element_by_xpath("//*[@title='Apply for a Job']")
+        applyForJobHeader=driver.find_element(By.XPATH,"//*[@title='Apply for a Job']")
         waitForAnElement(applyForJobHeader)
 
-        submitButton=driver.find_element_by_id("btnSubmit")
+        submitButton=driver.find_element(By.ID,"btnSubmit")
         # submitButton.location_once_scrolled_into_view()
         submitButton.click()
 
-        backButton=driver.find_element_by_xpath("//*[@id='Button-Box']/input[2]")
+        backButton=driver.find_element(By.XPATH,"//*[@id='Button-Box']/input[2]")
         backButton.click()
 
     
@@ -186,12 +186,12 @@ def ApplyToJob(element: WebElement):
 
         
 def checkContractType():
-    ContractType=driver.find_element_by_xpath("//*[@id='djphCONTRACT_TYPE']/div[2]")
+    ContractType=driver.find_element(By.XPATH,"//*[@id='djphCONTRACT_TYPE']/div[2]")
 
     typeOfContract= ContractType.text
 
     if typeOfContract not in ["Work Study - LEAP","Work Study","YUSA 2 PT"]:
-        ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
+        ViewJobPosting_button=driver.find_element(By.XPATH,"//*[@id='liNEWS_INTERNAL_JOBS']/a")
         ViewJobPosting_button.click()
         # AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
 
@@ -224,7 +224,7 @@ def OpenJobs():
                 driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
                 time.sleep(1)
         elemXpath="(//*[contains(@class,'tblStripingEven') or contains(@class,'tblStripingOdd')]/td/a[@class='relink'])["+str(i)+"]"
-        currentElem=driver.find_element_by_xpath(elemXpath)
+        currentElem=driver.find_element(By.XPATH,elemXpath)
         currentText=currentElem.text
         print("Current text is:"+currentText)
 
@@ -232,7 +232,7 @@ def OpenJobs():
         
         if checkJobApplied(currentText)==True or checkManualJobApply(currentText)==True:
             print("Current job has already been applied to, skipping.")
-            ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
+            ViewJobPosting_button=driver.find_element(By.XPATH,"//*[@id='liNEWS_INTERNAL_JOBS']/a")
             ViewJobPosting_button.click()
             AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
         else:
@@ -243,7 +243,7 @@ def OpenJobs():
             except NoSuchElementException:
                 print("Job number which requires manual filling of forms: "+currentText)
                 writeToManualApplicationFile(currentText)
-                ViewJobPosting_button=driver.find_element_by_xpath("//*[@id='liNEWS_INTERNAL_JOBS']/a")
+                ViewJobPosting_button=driver.find_element(By.XPATH,"//*[@id='liNEWS_INTERNAL_JOBS']/a")
                 ViewJobPosting_button.click()
                 AffliationChoices(["Work Study - LEAP","Work Study","YUSA 2 PT"])
     
@@ -274,22 +274,22 @@ def main():
 if __name__ == "__main__":
     main()
 
-# User_Input=driver.find_element_by_id("mli")
+# User_Input=driver.find_element(By.ID,"mli")
 # User_Input.send_keys(username)
 
-# # driver.find_element_by_id("password").click()
+# # driver.find_element(By.ID,"password").click()
 
 
 
-# # driver.find_element_by_id("password").send_keys("Test")
+# # driver.find_element(By.ID,"password").send_keys("Test")
 
 # driver.switch_to.alert.dismiss()
 
 # # WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "password"))).click()
-# Pwd_Input=driver.find_element_by_id(password)
+# Pwd_Input=driver.find_element(By.ID,password)
 # Pwd_Input.send_keys("passwor1d")
 
-# Login_Button=driver.find_element_by_xpath("//*[@type='submit']")
+# Login_Button=driver.find_element(By.XPATH,"//*[@type='submit']")
 # Login_Button.click()
 
 
